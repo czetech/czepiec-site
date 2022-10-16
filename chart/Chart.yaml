@@ -1,0 +1,16 @@
+apiVersion: v2
+name: czepiec-site
+version: 0.1.0
+kubeVersion: ">= 1.14.0-0"
+description: Petr's personal website.
+type: application
+keywords:
+- website
+home: https://www.czepiec.me/
+sources:
+- https://github.com/czepiec/czepiec-site
+maintainers:
+- name: Petr Czepiec
+  email: petr@czepiec.me
+  url: https://www.czepiec.me/
+appVersion: 0.1.0
