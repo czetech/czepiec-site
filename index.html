@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!-- This page is also a business card, just print it to size 55x85mm. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Petr Czepiec</title>
+    <style>
+      [data-scheme="dark"] {
+        --background-color: black;
+        --filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+      }
+
+      body {
+        background-color: var(--background-color);
+        display: flex;
+        filter: var(--filter);
+        flex-direction: column;
+        font-family: monospace;
+        text-align: center;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      .row {
+        display: flex;
+      }
+      .row-centered {
+        align-items: center;
+        justify-content: center;
+      }
+      .space {
+        flex-grow: 1;
+      }
+      .line {
+        margin-bottom: 1em;
+      }
+      .image-text {
+        height: 1em;
+        margin-bottom: .35em;
+        margin-right: .75em;
+      }
+      .image-footer {
+        height: 1em;
+        margin: 0 .25em;
+      }
+      .bold {
+        font-weight: bold;
+      }
+
+      @media not print {
+        body {
+          font-size: 16px;
+          height: calc(100vh - 2em);
+          margin: 1em;
+        }
+        main {
+          max-height: 20em;
+        }
+        .print {
+          display: none;
+        }
+        .row-social {
+          justify-content: center;
+        }
+        .text-no-image {
+          line-height: calc(1em + 6px);
+        }
+        .image-social {
+          height: 1.25em;
+          margin-left: .25em;
+          margin-right: .25em;
+        }
+
+        @media (min-width: 34em) {
+          .no-break {
+            display: none;
+          }
+        }
+      }
+
+      @media print {
+        body {
+          font-size: 10px;
+          height: 100vh;
+          margin: 0;
+        }
+        footer {
+          display: none;
+        }
+        a {
+          text-decoration: none;
+        }
+        .screen {
+          display: none;
+        }
+        .row-social {
+          flex-direction: column;
+          justify-content: space-evenly;
+        }
+        .text-no-image {
+          line-height: calc(1em + 4px);
+        }
+        .image-social {
+          height: 1em;
+          margin-top: .2em;
+          margin-right: .5em;
+        }
+      }
+
+      @page {
+        margin: 0;
+      }
+    </style>
+    <script>
+      function setScheme() {
+        var scheme = localStorage.getItem('scheme');
+        if (scheme == "dark" || (scheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-scheme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-scheme');
+        }
+      }
+
+      function changeScheme(scheme) {
+        if (scheme) {
+          localStorage.setItem('scheme', scheme);
+        } else {
+          localStorage.removeItem('scheme');
+        }
+        setScheme();
+      }
+
+      function initTerm() {
+        const string = 'Hello, friend';
+        const cursor = '&block;';
+        const hash = '#term';
+        const delay = 10;
+        var on = false;
+        var context = document.createElement('canvas').getContext("2d");
+        var mainDisplay;
+        var i;
+        var cur;
+        var interval = setInterval(function() {
+          if (!on) {
+            return;
+          }
+          if (i % 5 == 3 && i >= delay) {
+            if (i - delay < string.length * 5) {
+              var pre = term.innerHTML.slice(0, term.innerHTML.length - cur);
+              var suf = term.innerHTML.slice(term.innerHTML.length - cur);
+              term.innerHTML = pre + string.charAt((i - delay) / 5) + suf;
+            }
+          }
+          if (i % 2 == 0) {
+            if (cur == 1) {
+              term.innerHTML = term.innerHTML.slice(0, -1);
+              cur = 0;
+            } else {
+              term.innerHTML += cursor;
+              cur = 1;
+            }
+          }
+          i++;
+        }, 200);
+
+        ['DOMContentLoaded', 'hashchange', 'keydown'].forEach( function(event) {
+          window.addEventListener(event, function(e) {
+            var main = document.getElementsByTagName('main')[0];
+            var term = document.getElementById('term');
+            if (!on && (window.location.hash == hash || (e.shiftKey && e.keyCode == 84))) {
+              mainDisplay = main.style.display;
+              main.style.display = 'none';
+              window.location.hash = hash;
+              i = 0;
+              cur = 0;
+              context.font = window.getComputedStyle(term, null ).getPropertyValue('font');
+              var width = context.measureText(string + cursor).width;
+              term.style.width = 'calc(' + Math.ceil(width).toString() + 'px + 0.5em)';
+              term.style.textAlign = 'left';
+              on = true;
+            }
+            if (on && (window.location.hash != hash || e.keyCode == 27)) {
+              on = false;
+              term.innerHTML = '';
+              window.location.hash = '';
+              main.style.display = mainDisplay;
+            }
+          }, false);
+        });
+      }
+
+      setScheme();
+      initTerm();
+    </script>
+  </head>
+  <body>
+    <div class="space"></div>
+    <main>
+      <div class="print space"></div>
+      <div>
+        <div class="row row-centered line">
+          <p title="My name" class="text-no-image bold">Petr&nbsp;Czepiec</p>
+        </div>
+        <div class="row row-centered line">
+          <img src="/icons/phone.svg" alt="phone" class="image-text" />
+          <p title="Call me">+421&nbsp;944&nbsp;133&nbsp;702</p>
+        </div>
+        <div class="row row-centered line">
+          <img src="/icons/email.svg" alt="email" class="image-text" />
+          <p title="Email me">
+            <a href="mailto:petr@czepiec.me">petr@czepiec.me</a>
+          </p>
+        </div>
+        <div class="print row row-centered line">
+          <img src="/icons/web.svg" alt="web" class="image-text" />
+          <p>
+            <a href="https://www.czepiec.me/">www.czepiec.me</a>
+          </p>
+        </div>
+        <div class="row row-centered line">
+          <img src="/icons/key.svg" alt="key" class="image-text" />
+          <p title="All messages from me are signed, you can use encryption as well">
+            <a href="/petr_czepiec.asc">
+              2D82&nbsp;7BD1&nbsp;7168&nbsp;1D83&nbsp;2FA1<br class="no-break" />
+              DA0C&nbsp;FFF2&nbsp;E3B4&nbsp;24AB&nbsp;A7CF
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="space"></div>
+      <p class="line text-no-image">
+        In&nbsp;work-related&nbsp;matters, please&nbsp;<span class="screen">continue&nbsp;to</span><span class="print">see</span>
+        <a href="https://www.cze.tech/">www.cze.tech</a>.
+      </p>
+      <p class="line text-no-image">
+        My <a href="/Petr_Czepiec.pdf">resume</a>.
+      </p>
+      <div class="space"></div>
+      <div class="row row-social">
+        <div title="Follow me on Twitter" class="row row-centered">
+          <a href="https://twitter.com/PetrCzepiec"><img src="/icons/twitter.svg" alt="twitter" class="image-social" /></a>
+          <p class="print">PetrCzepiec</p>
+        </div>
+        <div title="Check my Github" class="row row-centered">
+          <a href="https://github.com/czepiec"><img src="/icons/github.svg" alt="github" class="image-social" /></a>
+          <p class="print">czepiec</p>
+        </div>
+        <div title="Find me on Facebook" class="row row-centered">
+          <a href="https://www.facebook.com/petrczepiec1/"><img src="/icons/facebook.svg" alt="facebook" class="image-social" /></a>
+          <p class="print">petrczepiec1</p>
+        </div>
+      </div>
+    </main>
+    <div class="row row-centered">
+      <p id="term"></p>
+    </div>
+    <div class="space"></div>
+    <footer>
+      <div class="row">
+        <div>
+          <a href="#term"><img src="/icons/term.svg" alt="term" title="Run terminal" class="image-footer" /></a>
+          <a href="https://github.com/czepiec/czepiec-site"><img src="/icons/source.svg" alt="source" title="Source code" class="image-footer" /></a>
+        </div>
+        <div class="space"></div>
+        <div class="row">
+          <img src="/icons/system.svg" alt="system" title="System color scheme" onclick="changeScheme();" class="image-footer" />
+          <img src="/icons/light.svg" alt="light" title="Light color scheme" onclick="changeScheme('light')" class="image-footer" />
+          <img src="/icons/dark.svg" alt="dark" title="Dark color scheme" onclick="changeScheme('dark');" class="image-footer" />
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
